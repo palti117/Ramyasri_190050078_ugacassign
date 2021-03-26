@@ -1,0 +1,29 @@
+{% extends 'userdata/main.html' %}
+{%block content%}
+		<div>
+			<button class="login_btn btn">
+				<a href="{% url 'home'%}">Home</a>
+			</button>
+		</div>
+		<form method="POST" action="" style="margin-top:30px;">
+			{% csrf_token %}
+			
+			
+			<div>
+				<label>
+					Roll No.:
+				</label>
+				<input type="number" name="RollNo">
+			</div>
+
+			<input type="submit" name="Submit">
+
+		</form>
+
+		<div style="margin-left: auto;margin-right: auto;">
+			{% for message in messages %}
+				<p id="messages">{{message}}</p>
+			{% endfor %}	
+		</div>
+
+{% endblock %}
