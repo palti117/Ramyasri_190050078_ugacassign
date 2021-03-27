@@ -18,4 +18,13 @@
   
 ##### Problem 2 -
 * Discussion forum like implementation with 3 databases - users, posts and comments for posts
-* 
+* Home page - index1.php
+  * Login option for existing user with fields username and password
+  * On validation of login, user can see posts - title and content of each post and option to view particular post for comments
+  * Can add comment to post
+  * Can see who commented and what was commented on a post
+  * Signup page - signup.php
+  * On valid username and password, user will be added to database
+  * Cannot view post.php and login.php without logging in , will be re directed to index1.php
+ 
+ 
