@@ -1,44 +1,94 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from django.contrib import messages
+from django.conf import settings
+from django.core.files.storage import FileSystemStorage
+
 from .models import *
 import json
 
+#to feed data into database
+'''f=open("static/users.json")
+usrs = json.load(f)
+usrs_stu = usrs["students"]'''
+
 def Name(l):
-	return l["Name"]
+	return l["name"]
 
 def Department(l):
-	return l["Department"]
+	return l["dept"]
 
 def RollNo(l):
-	return l["RollNo"]
+	return int(l["roll"])
 
 def hostel(l):
-	return l["hostel"]
+	return int(l["hstl"])
 
 def home(request):
 	if request.method=="POST":
+		doc = request.FILES
+		print(doc)
+		'''myfile=doc['myfile']
+		f=open(myfile)
+		fs = FileSystemStorage()
+		filename = fs.save(myfile.name, myfile)
+		print(fs.url(filename))
+		usrs = json.load(f)
+		print(usrs)'''
+		students = student.objects.all()
+		stus=[]
+		for s in students:
+			d1={
+			"name":s,
+			"roll":s.ro(),
+			"dept":s.de(),
+			"hstl":s.ho()
+			}
+			stus.append(d1)
+
+		stus.sort(key=RollNo)
+		context={'users':stus}
+		messages.info(request,"Sorted by RollNo")
+		return render(request,'userdata/userdata.html',context)
+
+	'''if request.method=="POST":
 		sorttype = request.POST.get("cat")
 		print(sorttype)
-		file=open("static/users.json")
-		data = json.load(file)
-		students = data["students"]
+		students = student.objects.all()
+		stus=[]
+		for s in students:
+			d1={
+			"name":s,
+			"roll":s.ro(),
+			"dept":s.de(),
+			"hstl":s.ho()
+			}
+			stus.append(d1)
 		if sorttype=="Name":
-			students.sort(key=Name)
+			stus.sort(key=Name)
 		elif sorttype=="Department":
-			students.sort(key=Department)
+			stus.sort(key=Department)
 		elif sorttype=="RollNo":
-			students.sort(key=RollNo)
+			stus.sort(key=RollNo)
 		elif sorttype=="hostel":
-			students.sort(key=hostel)
+			stus.sort(key=hostel)
 		messages.info(request,"Sorted by "+sorttype)
 		context={'users':students}
 		return render(request,'userdata/userdata.html',context)
-	file=open("static/users.json")
-	data = json.load(file)
-	students = data["students"]
-	students.sort(key=RollNo)
-	context={'users':students}
+'''
+	students = student.objects.all()
+	stus=[]
+	for s in students:
+		d1={
+		"name":s,
+		"roll":s.ro(),
+		"dept":s.de(),
+		"hstl":s.ho()
+		}
+		stus.append(d1)
+
+	stus.sort(key=RollNo)
+	context={'users':stus}
 	messages.info(request,"Sorted by RollNo")
 	return render(request,'userdata/userdata.html',context)
 
@@ -48,52 +98,40 @@ def addstu(request):
 		roll = request.POST.get("RollNo")
 		host = request.POST.get("hostel")
 		dept = request.POST.get("Department")
-		file=open("static/users.json")
-		data = json.load(file)
-		data1 = {
-			"Name":name,
-			"RollNo":int(roll),
-			"Department":dept,
-			"hostel":int(host)
-		}
+		students = student.objects.all()
+		roll_nos = [stu.roll for stu in students]
+		
 		flag = False
-		for i in range(len(data["students"])):
-			if data["students"][i]["RollNo"]==int(roll):
+		for i in roll_nos:
+			if i==roll:
 				flag = True
 
-		if flag==False:
-			data["students"].append(data1)
-			with open("static/users.json",'w') as file2:
-				json.dump(data,file2,indent=4)
-				messages.info(request,"Added "+name+" successfully")
-				return render(request,'userdata/addstu.html')
+		if flag==False:			
+			student(name=name,roll=roll,dept=dept,hstl=host).save()
+			messages.info(request,"Added "+name+" successfully")
+			return render(request,'userdata/addstu.html')
 		else:
-			messages.info(request,"User with roll no. "+roll+" already added")
+			messages.info(request,"User with roll no. "+roll+" already in database")
 			return render(request,'userdata/addstu.html')
 
 	return render(request,'userdata/addstu.html')
 
 def remstu(request):
 	if request.method=="POST":
-		name=request.POST.get("name")
 		roll = request.POST.get("RollNo")
-		host = request.POST.get("hostel")
-		dept = request.POST.get("Department")
-		file=open("static/users.json")
-		data = json.load(file)
+		students = student.objects.all()
+		roll_nos = [stu.roll for stu in students]
 		
 		flag = False
-		for i in range(len(data["students"])):
-			if data["students"][i]["RollNo"]==int(roll):
+		for i in roll_nos:
+			if i==roll:
 				flag = True
-				data["students"].remove(data["students"][i])
+				student.objects.filter(roll=roll).delete()
 				break
 
 		if flag:		
-			with open("static/users.json",'w') as file2:
-				json.dump(data,file2,indent=4)
-				messages.info(request,"Removed "+name+" successfully")
-				return render(request,'userdata/remstu.html')
+			messages.info(request,"Removed "+roll+" successfully")
+			return render(request,'userdata/remstu.html')
 		else:
 			messages.info(request,"No such user of Roll no.  "+roll+" in database")
 			return render(request,'userdata/remstu.html')
@@ -108,25 +146,24 @@ def editstu(request):
 		name=request.POST.get("name")		
 		host = request.POST.get("hostel")
 		dept = request.POST.get("Department")
-		file=open("static/users.json")
-		data = json.load(file)
+		students = student.objects.all()
+		roll_nos = [stu.roll for stu in students]
 		data1 = {
-			"Name":name,
-			"RollNo":int(roll),
-			"Department":dept,
-			"hostel":int(host)
+			"name":name,
+			"roll":int(roll),
+			"dept":dept,
+			"hstl":int(host)
 		}
 		flag = False
-		for i in range(len(data["students"])):
-			if data["students"][i]["RollNo"]==int(roll):
-				data["students"][i]=data1
+		for i in roll_nos:
+			if i==roll:
+				student.objects.filter(roll=roll).update(name=name,hstl=host,dept=dept)
 				flag = True
+				break
 
 		if flag:
-			with open("static/users.json",'w') as file2:
-				json.dump(data,file2,indent=4)
-				messages.info(request,"Edited details of  "+roll+" successfully")
-				return render(request,'userdata/editstu.html')
+			messages.info(request,"Edited details of  "+roll+" successfully")
+			return render(request,'userdata/editstu.html')
 		else:
 			messages.info(request,"No such student with Roll No.: "+roll)
 			return render(request,'userdata/editstu.html')

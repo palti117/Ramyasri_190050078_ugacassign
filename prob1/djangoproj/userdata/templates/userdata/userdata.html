@@ -1,6 +1,17 @@
 {% extends 'userdata/main.html' %}
 {%block content%}
-	<div>
+	
+	<!--<div>
+		<form method="POST">
+			{%csrf_token%}
+			<input type="file" name="myfile" enctype="multipart/form-data">
+			<input class="btn login_btn" type="submit" value="Upload">
+			
+		</form>
+			
+	</div>-->
+
+	<!--<div>
 		<form action="" method="POST" style="margin-top: 10px;">
 		{% csrf_token %}
 			<label style="font-size: 1.3em;">Select sort type</label>
@@ -12,7 +23,7 @@
 			</select>
 			<input class="btn login_btn" type="submit" value="Submit">
  		</form>
- 	</div>
+ 	</div>-->
 	<div style="margin-left: auto;margin-right: auto;">
 		{% for message in messages %}
 			<p id="messages">{{message}}</p>
@@ -47,16 +58,16 @@
 				{% for stu in users%}
 					<tr>
 						<td>
-							{{stu.Name}}
+							{{stu.name}}
 						</td>
 						<td>
-							{{stu.RollNo}}
+							{{stu.roll}}
 						</td>
 						<td>
-							{{stu.Department}}
+							{{stu.dept}}
 						</td>
 						<td>
-							{{stu.hostel}}
+							{{stu.hstl}}
 						</td>
 					</tr>
 				{%endfor%}
