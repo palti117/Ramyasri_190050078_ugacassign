@@ -17,7 +17,7 @@
   * Creating "student" model with fields as name, roll number, department, hostel
   
 ##### Problem 2 -
-* Discussion forum like implementation with 3 databases - users, posts and comments for posts
+* Discussion forum like implementation, using PHP and 3 MySQL databases - users, posts and comments for posts
 * Home page - index1.php
   * Login option for existing user with fields username and password
   * On validation of login, user can see posts - title and content of each post and option to view particular post for comments
