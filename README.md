@@ -25,6 +25,6 @@
   * Can see who commented and what was commented on a post
   * Signup page - signup.php
   * On valid username and password, user will be added to database
-  * Cannot view post.php and login.php without logging in , will be re directed to index1.php
+  * Cannot view post.php and login.php without logging in , will be re-directed to index1.php
  
  
