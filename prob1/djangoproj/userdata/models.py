@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 
+#student class with name,rollnumber,department,hostel
 class student(models.Model):
 	name = models.CharField(max_length=200, null=True)# name
 	roll = models.CharField(max_length=200, null=True)# roll number

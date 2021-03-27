@@ -7,9 +7,9 @@ from . import views
 
 urlpatterns = [
     path('',views.home,name="home"),
-    path('home',views.home,name="home"),   
-    path('addstu',views.addstu,name="addstu"),
-    path('remstu',views.remstu,name="remstu"),
-    path('editstu',views.editstu,name="editstu"),
+    path('home',views.home,name="home"),   # directs to userdata.html
+    path('addstu',views.addstu,name="addstu"),#interface for adding student, directs to addstu.html
+    path('remstu',views.remstu,name="remstu"),#interface for removing student, directs to remstu.html
+    path('editstu',views.editstu,name="editstu"),#interface for editing student details, directs to editstu.html
 ]
 
